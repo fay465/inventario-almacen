@@ -1,5 +1,8 @@
 # Sistema de Control de Inventario - Almacén
 
+**Estudiante:** Fabián Ignacio Lagos Verdugo
+**Asignatura:** Construcción de Software
+
 Aplicación web desarrollada con **React 19**, **Vite** y **Firebase Firestore** para la gestión de inventario de un almacén. Permite realizar operaciones integrales de CRUD (Crear, Leer, Actualizar y Eliminar) con persistencia y sincronización en tiempo real en la nube.
 
 ---
