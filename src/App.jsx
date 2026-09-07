@@ -1,122 +1,68 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+// src/App.jsx
+import { useEffect, useState } from "react"
+import { Form } from "./components/form"
+import { Table } from "./components/table"
+import { Report } from "./components/report"
+import {
+    actualizarProducto, crearProducto,
+    eliminarProducto, suscribirInventario,
+} from "./firebase/inventarioService"
 
-function App() {
-  const [count, setCount] = useState(0)
+const inicial = { nombre: "", categoria: "", precio: "", stock: "" }
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+export const App = () => {
+    const [info, setInfo] = useState([])
+    const [cargando, setCargando] = useState(true)
+    const [productoEditando, setProductoEditando] = useState(null)
 
-      <div className="ticks"></div>
+    useEffect(() => {
+        const unsubscribe = suscribirInventario((productos) => {
+            setInfo(productos)
+            setCargando(false)
+        })
+        return () => unsubscribe()
+    }, [])
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+    const guardarInfo = async (valores) => {
+        if (productoEditando) {
+            await actualizarProducto(productoEditando.id, valores)
+            setProductoEditando(null)
+        } else {
+            await crearProducto(valores)
+        }
+    }
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+    const editarInfo = (producto) => setProductoEditando(producto)
+    const cancelarEdicion = () => setProductoEditando(null)
+    const borrarInfo = async (id) => {
+        var op = window.confirm('¿Esta seguro de eliminar el registro?')
+        if (op) {
+            await eliminarProducto(id)
+            if (productoEditando?.id === id) setProductoEditando(null)
+        }
+    }
+
+    return (
+        <>
+            <h1>Control de Inventario - Almacén</h1>
+            
+            <Report info={info} />
+
+            <Form
+                key={productoEditando?.id ?? "nuevo"}
+                inicial={productoEditando ?? inicial}
+                guardarInfo={guardarInfo}
+                enEdicion={Boolean(productoEditando)}
+                cancelarEdicion={cancelarEdicion}
+            />
+
+            {cargando ? (
+                <p>Cargando inventario...</p>
+            ) : (
+                <Table info={info} editarInfo={editarInfo} borrarInfo={borrarInfo} />
+            )}
+        </>
+    )
 }
 
 export default App
