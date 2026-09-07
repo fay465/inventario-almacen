@@ -1,8 +1,8 @@
 // src/App.jsx
 import { useEffect, useState } from "react"
-import { Form } from "./components/form"
-import { Table } from "./components/table"
-import { Report } from "./components/report"
+import { Form } from "./components/Form"
+import { Table } from "./components/Table"
+import { Report } from "./components/Report"
 import {
     actualizarProducto, crearProducto,
     eliminarProducto, suscribirInventario,
