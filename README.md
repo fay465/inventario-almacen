@@ -1,6 +1,6 @@
 # Sistema de Control de Inventario - Almacén
 
-Aplicación web desarrollada con **React 19**, *VVite** y **Firebase Firestore** para la gestión de inventario de un almacén. Permite realizar operaciones integrales de CRUD (Crear, Leer, Actualizar y Eliminar) con persistencia y sincronización en tiempo real en la nube.
+Aplicación web desarrollada con **React 19**, **Vite** y **Firebase Firestore** para la gestión de inventario de un almacén. Permite realizar operaciones integrales de CRUD (Crear, Leer, Actualizar y Eliminar) con persistencia y sincronización en tiempo real en la nube.
 
 ---
 
@@ -55,4 +55,4 @@ Aplicación web desarrollada con **React 19**, *VVite** y **Firebase Firestore**
 - Leer (en tiempo real desde Firestore con onSnapshot).
 - Actualizar (reutilizando el formulario con el id único).
 - Eliminar (borrado dísico en Firestore con validación).
-- Reporte (cÁlculo automático de sumas y alertas de bajo stock).
+- Reporte (cálculo automático de sumas y alertas de bajo stock).
